@@ -4,6 +4,10 @@ const routes = require("./routes");
 const server = express();
 const PORT = 3001;
 
+// usar o request.body
+server.use(express.urlencoded());
+
+// usando template engine, no caso, ejs
 server.set("view engine", "ejs");
 
 // habilitar arquivos estáticos
