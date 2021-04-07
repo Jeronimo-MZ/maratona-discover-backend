@@ -18,7 +18,7 @@ module.exports = {
             created_at: Date.now(), // atribuindo data actual
         };
 
-        Job.update([...jobs, job]);
+        Job.create(job);
         return response.redirect("/");
     },
     show(request, response) {
