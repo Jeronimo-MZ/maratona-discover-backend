@@ -5,25 +5,22 @@ module.exports = {
     create(_request, response) {
         return response.render("job");
     },
-    save(request, response) {
+    async save(request, response) {
         // request.body = { name: 'Novo Job', 'daily-hours': '12', 'total-hrs': '2' }
-        const jobs = Job.get();
-        const jobId = jobs[jobs.length - 1]?.id + 1 || 1;
 
         const job = {
-            id: jobId,
             name: request.body.name,
             "daily-hours": request.body["daily-hours"],
             "total-hours": request.body["total-hours"],
             created_at: Date.now(), // atribuindo data actual
         };
 
-        Job.create(job);
+        await Job.create(job);
         return response.redirect("/");
     },
-    show(request, response) {
-        const jobs = Job.get();
-        const profile = Profile.get();
+    async show(request, response) {
+        const jobs = await Job.get();
+        const profile = await Profile.get();
 
         const jobId = request.params.id;
 
@@ -39,40 +36,23 @@ module.exports = {
             job,
         });
     },
-    update(request, response) {
-        const jobs = Job.get();
-
+    async update(request, response) {
         const jobId = request.params.id;
 
-        const job = jobs.find((job) => Number(job.id) === Number(jobId));
-
-        if (!job) {
-            return response.send("Job Not Found").status(404);
-        }
-
         updatedJob = {
-            ...job,
             name: request.body.name,
             "total-hours": request.body["total-hours"],
             "daily-hours": request.body["daily-hours"],
         };
 
-        Job.update(
-            jobs.map((job) => {
-                if (Number(job.id) === Number(jobId)) {
-                    job = updatedJob;
-                }
-
-                return job;
-            })
-        );
+        await Job.update(updatedJob, jobId);
         // return response.redirect("/job/" + jobId);
         return response.redirect("/");
     },
-    delete(request, response) {
+    async delete(request, response) {
         const jobId = request.params.id;
 
-        Job.delete(jobId);
+        await Job.delete(jobId);
         return response.redirect("/");
     },
 };
